@@ -1,0 +1,16 @@
+{
+	"ambientocclusion": false,
+	"textures": {
+		"content": "block/water_still",
+		"particle": "#content"
+	},
+	"elements": [
+		{
+			"from": [ 2, 4, 2 ],
+			"to": [ 14, 15, 14 ],
+			"faces": {
+				"up": { "texture": "#content", "tintindex": 0 }
+			}
+		}
+	]
+}

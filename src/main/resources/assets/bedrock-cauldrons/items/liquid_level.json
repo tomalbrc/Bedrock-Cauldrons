@@ -1,0 +1,12 @@
+{
+  "model": {
+    "model": "bedrock-cauldrons:item/level",
+    "type": "minecraft:model",
+    "tints": [
+      {
+        "type": "minecraft:dye",
+        "default": 8355711
+      }
+    ]
+  }
+}
