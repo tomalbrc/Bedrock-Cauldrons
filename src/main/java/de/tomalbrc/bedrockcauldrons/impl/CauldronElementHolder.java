@@ -1,6 +1,7 @@
 package de.tomalbrc.bedrockcauldrons.impl;
 
 import de.tomalbrc.bedrockcauldrons.impl.block.PolymerCauldron;
+import de.tomalbrc.bedrockcauldrons.impl.block.entity.DyeCauldronBlockEntity;
 import de.tomalbrc.bedrockcauldrons.impl.block.entity.UpdateableBlockEntity;
 import eu.pb4.polymer.virtualentity.api.ElementHolder;
 import eu.pb4.polymer.virtualentity.api.attachment.BlockAwareAttachment;
@@ -53,7 +54,13 @@ public class CauldronElementHolder extends ElementHolder {
                 var world = blockAwareAttachment.getWorld();
                 var be = world.getBlockEntity(blockAwareAttachment.getBlockPos());
                 if (be instanceof UpdateableBlockEntity updateableBlockEntity) {
-                    updateableBlockEntity.update(this);
+                    if (updateableBlockEntity instanceof DyeCauldronBlockEntity block) {
+                        if (block.getColor() != null) {
+                            updateableBlockEntity.update(this);
+                        }
+                    } else {
+                        updateableBlockEntity.update(this);
+                    }
                 }
             }
         }
