@@ -3,7 +3,7 @@
   "minVersion": "0.8",
   "package": "de.tomalbrc.bedrockcauldrons.mixin",
   "compatibilityLevel": "JAVA_21",
-  "server": [
+  "mixins": [
     "CauldronInteractionAccessor",
     "CauldronInteractionMixin",
     "DyeItemAccessor"

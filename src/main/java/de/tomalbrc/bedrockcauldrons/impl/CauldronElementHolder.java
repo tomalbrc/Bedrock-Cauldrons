@@ -34,7 +34,6 @@ public class CauldronElementHolder extends ElementHolder {
         this.levelDisplay = new ItemDisplayElement(item());
         this.levelDisplay.setYaw(180);
         this.levelDisplay.setOffset(new Vec3(0, 0.0, 0));
-        this.addElement(this.levelDisplay);
 
         this.setVisualLevel(blockState.getValue(PolymerCauldron.LEVEL));
     }
@@ -92,10 +91,11 @@ public class CauldronElementHolder extends ElementHolder {
     public void setColor(int c) {
         this.color = c;
         this.levelDisplay.setItem(item());
+        if (this.levelDisplay.getHolder() == null)
+            addElement(this.levelDisplay);
     }
 
     private void setVisualLevel(int level) {
-        this.setColor(this.color);
         float y = switch (level) {
             case 3 -> 0f;
             case 2 -> -3/16f;
