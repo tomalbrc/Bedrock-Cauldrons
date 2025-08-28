@@ -96,7 +96,7 @@ public class CustomCauldronInteractions {
 
     private static void initDye() {
         var map = DYE.map();
-        var list = List.of(Items.LEATHER_BOOTS, Items.LEATHER_CHESTPLATE, Items.LEATHER_HELMET, Items.LEATHER_HELMET, Items.LEATHER_HORSE_ARMOR);
+        var list = List.of(Items.LEATHER_BOOTS, Items.LEATHER_CHESTPLATE, Items.LEATHER_HELMET, Items.LEATHER_LEGGINGS, Items.LEATHER_HORSE_ARMOR);
         for (Item item : list) {
             map.put(item, DYE_LEATHER);
         }
