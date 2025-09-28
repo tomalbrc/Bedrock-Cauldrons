@@ -21,6 +21,6 @@
     "fabricloader": ">=${loader_version}",
     "fabric": "*",
     "polymer-core": "*",
-    "minecraft": ">=1.21.9"
+    "minecraft": ">=1.21.9-"
   }
 }
