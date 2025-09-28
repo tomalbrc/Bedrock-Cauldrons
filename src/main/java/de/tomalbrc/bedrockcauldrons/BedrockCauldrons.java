@@ -11,6 +11,7 @@ public class BedrockCauldrons implements ModInitializer {
         PolymerResourcePackUtils.addModAssets("bedrock-cauldrons");
         PolymerResourcePackUtils.markAsRequired();
 
+        ModConfig.load();
         CustomCauldronInteractions.init();
         ModBlocks.init();
     }

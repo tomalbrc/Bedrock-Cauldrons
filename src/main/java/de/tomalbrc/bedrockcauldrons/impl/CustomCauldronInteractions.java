@@ -1,13 +1,17 @@
 package de.tomalbrc.bedrockcauldrons.impl;
 
+import de.tomalbrc.bedrockcauldrons.ModConfig;
 import de.tomalbrc.bedrockcauldrons.impl.block.PolymerCauldron;
 import de.tomalbrc.bedrockcauldrons.impl.block.entity.DyeCauldronBlockEntity;
 import de.tomalbrc.bedrockcauldrons.impl.block.entity.PotionCauldronBlockEntity;
 import de.tomalbrc.bedrockcauldrons.mixin.CauldronInteractionAccessor;
 import de.tomalbrc.bedrockcauldrons.mixin.DyeItemAccessor;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
@@ -32,7 +36,7 @@ public class CustomCauldronInteractions {
 
     public static void init() {
         initPotion();
-        initDye();
+        ServerLifecycleEvents.SERVER_STARTED.register(x -> initDye());
 
         var map = CauldronInteraction.WATER.map();
         var map2 = DYE.map();
@@ -46,25 +50,28 @@ public class CustomCauldronInteractions {
 
     private static void initPotion() {
         var map = POTION.map();
-        map.put(Items.POTION, POTION_BOTTLE);
-        map.put(Items.LINGERING_POTION, POTION_BOTTLE);
-        map.put(Items.SPLASH_POTION, POTION_BOTTLE);
 
-        map.put(Items.GLASS_BOTTLE, ((blockState, level, blockPos, player, interactionHand, itemStack) -> {
-            if (!level.isClientSide && level.getBlockEntity(blockPos) instanceof PotionCauldronBlockEntity cauldronBlock) {
-                Item item = itemStack.getItem();
-                player.setItemInHand(interactionHand, ItemUtils.createFilledResult(itemStack, player, PotionContents.createItemStack(Items.POTION, cauldronBlock.getPotion())));
-                player.awardStat(Stats.USE_CAULDRON);
-                player.awardStat(Stats.ITEM_USED.get(item));
-                lowerFillLevel(blockState, level, blockPos);
-                level.playSound(null, blockPos, SoundEvents.BOTTLE_FILL, SoundSource.BLOCKS, 1.0F, 1.0F);
-                level.gameEvent(null, GameEvent.FLUID_PICKUP, blockPos);
-            }
+        if (ModConfig.getInstance().potions) {
+            map.put(Items.POTION, POTION_BOTTLE);
+            map.put(Items.LINGERING_POTION, POTION_BOTTLE);
+            map.put(Items.SPLASH_POTION, POTION_BOTTLE);
 
-            return InteractionResult.SUCCESS;
-        }));
+            map.put(Items.GLASS_BOTTLE, ((blockState, level, blockPos, player, interactionHand, itemStack) -> {
+                if (!level.isClientSide && level.getBlockEntity(blockPos) instanceof PotionCauldronBlockEntity cauldronBlock) {
+                    Item item = itemStack.getItem();
+                    player.setItemInHand(interactionHand, ItemUtils.createFilledResult(itemStack, player, PotionContents.createItemStack(Items.POTION, cauldronBlock.getPotion())));
+                    player.awardStat(Stats.USE_CAULDRON);
+                    player.awardStat(Stats.ITEM_USED.get(item));
+                    lowerFillLevel(blockState, level, blockPos);
+                    level.playSound(null, blockPos, SoundEvents.BOTTLE_FILL, SoundSource.BLOCKS, 1.0F, 1.0F);
+                    level.gameEvent(null, GameEvent.FLUID_PICKUP, blockPos);
+                }
 
-        map.put(Items.ARROW, ((blockState, level, blockPos, player, interactionHand, itemStack) -> {
+                return InteractionResult.SUCCESS;
+            }));
+        }
+
+        if (ModConfig.getInstance().tippedArrows) map.put(Items.ARROW, ((blockState, level, blockPos, player, interactionHand, itemStack) -> {
             if (!level.isClientSide && level.getBlockEntity(blockPos) instanceof PotionCauldronBlockEntity cauldronBlock) {
                 Item item = itemStack.getItem();
                 int count = itemStack.getCount();
@@ -96,9 +103,8 @@ public class CustomCauldronInteractions {
 
     private static void initDye() {
         var map = DYE.map();
-        var list = List.of(Items.LEATHER_BOOTS, Items.LEATHER_CHESTPLATE, Items.LEATHER_HELMET, Items.LEATHER_LEGGINGS, Items.LEATHER_HORSE_ARMOR);
-        for (Item item : list) {
-            map.put(item, DYE_LEATHER);
+        for (Holder<Item> itemHolder : BuiltInRegistries.ITEM.get(ItemTags.DYEABLE).orElseThrow()) {
+            map.put(itemHolder.value(), DYE_LEATHER);
         }
     }
 
